@@ -2,6 +2,14 @@
 🇧🇷 Gerenciador de baixo nível Escrito em Shell. <br/>
 :us: Low level package manager Written in Shell.
 
+----
+
+🇧🇷 **Para uma melhor Documentação consulte** <br/>
+:us: **For better Documentation see** <br/><br/>
+https://www.slackjeff.com.br/bananapkg/
+
+----
+
 ## Explicação dos utilitários 🇧🇷PT-BR
 
 ### createpkg (Criação de pacotes .mz)
@@ -41,12 +49,6 @@ Installing and updating one or more packages <br/><br/>
 Remove one or more packages <br/><br/>
 **- b, burn** *package_name-version.mz* (Remove package) <br/>
 **- h, help** Displays help
-
-----
-
-🇧🇷 **Para uma melhor Documentação consulte** <br/>
-:us: **For better Documentation see** <br/>
-https://www.slackjeff.com.br/bananapkg/
 
 ----
 

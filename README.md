@@ -1,5 +1,5 @@
 # bananapkg :banana:
-Gerenciador de baixo nível Escrito em Shell. <br/>
+Brasil Gerenciador de baixo nível Escrito em Shell. <br/>
 :us: Low level package manager Written in Shell.
 
 ## Ferramentas

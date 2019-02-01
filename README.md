@@ -2,9 +2,7 @@
 🇧🇷 Gerenciador de baixo nível Escrito em Shell. <br/>
 :us: Low level package manager Written in Shell.
 
-🇧🇷PT-BR
-
-## Ferramentas 
+## Explicação dos utilitários 🇧🇷PT-BR
 
 ### createpkg (Criação de pacotes .mz)
 
@@ -14,9 +12,9 @@
 
 ----
 
-:us: ENG
 
-## Tools 
+
+## Explanation of utilities :us: ENG
 
 ### createpkg (Create package .mz)
 

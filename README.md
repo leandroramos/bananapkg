@@ -44,5 +44,6 @@ Remove one or more packages <br/><br/>
 
 ----
 
-🇧🇷 Para uma melhor Documentação consulte
-:us: For better Documentation see
+🇧🇷 Para uma melhor Documentação consulte <br/>
+:us: For better Documentation see <br/>
+https://www.slackjeff.com.br/bananapkg/

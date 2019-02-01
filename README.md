@@ -34,10 +34,15 @@ Creating packages in .mz format, this is a simple tarball compressed with utilit
 ### plantpkg (Install and Upgrade package)
 Installing and updating one or more packages <br/><br/>
 **- i, install** *package_name-version.mz* (Package installation) <br/>
-**- u, upgrade** * package_name-version.mz* (Package update) <br/>
+**- u, upgrade** *package_name-version.mz* (Package update) <br/>
 **- h, help** Displays help
 
 ### burnpkg (Remove Package)
 Remove one or more packages <br/><br/>
 **- b, burn** *package_name-version.mz* (Remove package) <br/>
 **- h, help** Displays help
+
+----
+
+🇧🇷 Para uma melhor Documentação consulte
+:us: For better Documentation see

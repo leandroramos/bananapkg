@@ -1,4 +1,4 @@
-# bananapkg :banana:
+# bananapkg :banana: :package:
 🇧🇷 Gerenciador de baixo nível Escrito em Shell. <br/>
 :us: Low level package manager Written in Shell.
 

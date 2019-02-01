@@ -5,20 +5,20 @@
 ## Explicação dos utilitários 🇧🇷PT-BR
 
 ### createpkg (Criação de pacotes .mz)
-Criação de pacotes no formato .mz, este é um simples tarball comprimido com o utilitário xz
-**-n, name** *nome_do_pacote-versao.mz*
-**-g, generate** Gera um diretório **info/** com um arquivo **desc** para edição
-**-h, help** Exibe ajuda
+Criação de pacotes no formato .mz, este é um simples tarball comprimido com o utilitário xz <br/>
+**-n, name** *nome_do_pacote-versao.mz*<br/>
+**-g, generate** Gera um diretório **info/** com um arquivo **desc** para edição<br/>
+**-h, help** Exibe ajuda<br/>
 
 ### plantpkg (Instalar e Atualizar pacotes)
-Instalação e atualização dos pacotes
-**-i, install** *nome_do_pacote-versao.mz* (Instalação de pacotes)
-**-u, upgrade** *nome_do_pacote-versao.mz* (Atualização de pacotes)
-**-h, help** Exibe ajuda
+Instalação e atualização dos pacotes<br/>
+**-i, install** *nome_do_pacote-versao.mz* (Instalação de pacotes)<br/>
+**-u, upgrade** *nome_do_pacote-versao.mz* (Atualização de pacotes)<br/>
+**-h, help** Exibe ajuda<br/>
 
 ### burnpkg (Remover Pacotes)
-**-b, burn** *nome_do_pacote-versao.mz* (Remover pacote)
-**-h, help** Exibe ajuda
+**-b, burn** *nome_do_pacote-versao.mz* (Remover pacote)<br/>
+**-h, help** Exibe ajuda<br/>
 
 ----
 

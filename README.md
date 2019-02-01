@@ -26,7 +26,18 @@ Remove um ou mais pacotes<br/><br/>
 ## Explanation of utilities :us: ENG
 
 ### createpkg (Create package .mz)
+Creating packages in .mz format, this is a simple tarball compressed with utility xz <br/><br/>
+**- n, name** *package_name-version.mz* <br/>
+**- g, generate** Generate a directory *info/* with a *desc* file for editing <br/>
+**- h, help** Displays help
 
 ### plantpkg (Install and Upgrade package)
+Installing and updating one or more packages <br/><br/>
+**- i, install** *package_name-version.mz* (Package installation) <br/>
+**- u, upgrade** * package_name-version.mz* (Package update) <br/>
+**- h, help** Displays help
 
 ### burnpkg (Remove Package)
+Remove one or more packages <br/><br/>
+**- b, burn** *package_name-version.mz* (Remove package) <br/>
+**- h, help** Displays help

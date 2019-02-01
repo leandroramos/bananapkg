@@ -53,4 +53,7 @@ Remove one or more packages <br/><br/>
 ----
 
 ## Requisitos/Requirements
-**Bash** >=
+**Bash** >= 4.4.18
+**GNU Sed** >= 4.2.2
+**GNU Tar** >= 1.30
+**xz** >= 5.2.2

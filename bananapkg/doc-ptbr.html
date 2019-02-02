@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<title>BananaPKG - Simples Gerenciador de pacotes</title>
+	<meta charset="utf-8">
+	<style>
+		body{font-size: 1.2em; color: #232323;font-family: courier new; margin: 8%;}
+		hr{border: 1px dashed; color: #333; margin-top: 4%; margin-bottom: 4%;}
+		h3{margin-top: 3%; margin-bottom: 3%;}
+		li#categoria{margin: 0.5%;}
+		#code{background-color: #b8b8b8; padding: 1%; color: #232323;}
+		.titulo{color: #007e4d;}
+	</style>
+</head>
+<body>
+<h2>Documentação</h2>
+<h3>Índice</h3>
+<ol id="principal">
+	<li id="categoria">Prefácio</li>
+		<ul>
+			<li><a href="#bananapkgprojeto">O projeto BananaPKG</a></li>
+			<li><a href="#inspirado">BananaPKG é fork de qual gerenciador?</a></li>
+			<li><a href="#linguagem-bananapkg">Em qual linguagem é escrito o BananaPKG</a></li>
+			<li><a href="#bananapkg-alto-nivel">BananaPKG é de alto nível?</a></li>
+			<li><a href="#formato-pacote">Qual o formato do pacote?</a></li>
+			<li><a href="#passar-amigos">Posso passar os pacotes que criei para amigos?</a></li>
+		</ul>
+	<li id="categoria" href='#modo-de-utilizacao'>Modo de Utilização</li>
+		<ul>
+			<li><a href="#criar-pacote">Como criar um pacote</a></li>
+			<li><a href="#instalar-atualizar-pacote">Como instalar/atualizar um pacote</a></li>
+			<li><a href="#remover-pacote">Como remover um pacote</a></li>			
+		</ul>
+</ol>
+
+<hr>
+
+<h3 id="bananapkgprojeto" class="titulo">O projeto BananaPKG</h3>
+O bananaPKG é o projeto que tem suas ferramentas independentes, cada ferramenta faz alguma manutenção no pacote, sendo estes utilitários: <br><br>
+<li><b>createpkg</b> Cria um pacote na extensão .mz</li>
+<li><b>burnpkg</b> Remove um ou mais pacotes</li>
+<li><b>plantpkg</b> Instala e Atualiza um ou mais pacotes</li>
+<br>
+Você pode conferir a sintaxe no indice: <a href="#modo-de-utilizacao">Modo de utilização</a>
+
+
+<h3 id="inspirado" class="titulo">BananaPKG é fork de qual gerenciador?</h3>
+Nenhum. O bananaPKG foi <i>criado do zero</i>, porém teve inspiração nos utilitários <b>installpkg</b>, <b>upgradepkg</b>, <b>removepkg</b> da distribuição Slackware que também é escrito do zero e em Shell Script. O 
+
+
+<h3 id="linguagem-bananapkg" class="titulo">Em qual linguagem é escrito o BananaPKG</h3>
+O BananaPKG foi criado na linguagem de programação Shell Bash. Feito para ser simples, fácil e agradável de se utilizar... Em poucos passos você já pode criar os seus pacotes e passar para seus amigos.
+
+
+<h3 id="bananapkg-alto-nivel" class="titulo">BananaPKG é de alto nível?</h3>
+Não! BananaPKG é uma ferramenta de baixo nível, com ela você pode <b>Criar</b>, <b>Instalar</b>, <b>Atualizar</b> e <b>Remover</b> pacotes do seu sistema.<br>
+Ou seja, ela serve para gerenciar os pacotes e cuida-los. Se caso você seja um bom programador de Shell e queira fazer uma extensão de alto nível que resolva dependências, há uma array/lista no arquivo info/desc que contém as dependências do pacote.
+Essa array foi criada e pensada para um uso futuro para quem deseja fazer uma extensão. Por padrão o projeto não terá oficialmente uma extensão para esta finalidade.
+
+<h3 id="formato-pacote" class="titulo">Qual o formato do pacote?</h3>
+O formato de pacote próprio é o <b>.mz</b>. Como inicialmente o BananaPKG foi criado para suprir a necessidade da distribuição Linux mazonOS, que é uma distribuição criada do zero e não possuia um gerenciador de pacotes, acabou que o formato ficou e vai continuar como .mz.<br>
+Este formato é um simples arquivo compactado com o utilitário tar e comprimido com o utilitário xz. 
+Mas sinta-se a vontade para modificar ao seu gosto a extensão se assim necessitar... O programa está bem modularizado e um bom programador em Shell consegue fazer a modificação para sua necessidade.
+
+<h3 id="passar-amigos" class="titulo">Posso passar os pacotes que criei para amigos?</h3>
+Com toda certeza. Mas para quem ser o receptor do pacote vai precisar utilizar o BananaPKG também. Isso devido ao fato que o pacote que ele gera depende do instalador para tratar o pacote antes de instalar.
+
+<hr>
+
+<h2 id="modo-de-utilizacao">Modo de utilização</h2>
+
+<h3 id="criar-pacote" class="titulo">Como criar um pacote</h3>
+<b>createpkg [opções] [nome_do_pacote-versão.mz]</b><br>
+
+<p>Opções disponíveis do <b>createpkg</b></p>
+
+<div id="code">
+<b>-n</b>, <b>name</b> NomeDoPacote-Versão.mz<br>
+<br>
+<b>-g</b>, <b>generate</b> Gera o arquivo desc não preenchido.<br>
+<br>
+<b>-h</b>, <b>--help</b> Exibe ajuda e sai<br>
+</div>
+
+<p>Após a você ter feito o fakeroot do pacote, você irá necessitar seguir um passo a passo para ter êxito. O primeiro passo é criar um diretório chamado <b>info/</b> e um arquivo dentro do diretório chamado <b>desc</b>. Esse arquivo <b>desc</b> é de muita importância para o pacote. É atráves dele que toda conferência do pacote é feita nos outros utilitários.<br>
+Você pode criar manualmente ou automaticamente com a opção <b>-g</b>, <b>generate</b>. Está opção irá criar o diretório info/ e o arquivo desc pronto para edição.</p>
+
+<p>O arquivo desc tem um série de variáveis que precisam ser editadas, sendo que todas <b>menos</b> a array/lista <b>dep</b> precisa ser preenchida, ás variáveis são:</p>
+
+<div id="code">
+# Nome do Mantenedor<br>
+maintainer=""<br>
+<br>
+# Nome do pacote<br>
+pkgname=""<br>
+<br>
+# Pequena descrição do Programa<br>
+desc=""<br>
+<br>
+# Versão do Programa<br>
+version=""<br>
+<br>
+# URL do Programa<br>
+url=""<br>
+<br>
+# Dependências do pacote, campo não é obrigatório, mas é interessante<br>
+# Você fazer a adição para futuras consultas.<br>
+dep=("")<br>
+</div>
+
+
+<p>Preencha todas as variáveis em letras minúsculas, lembre-se de por no campo <b>pkgname</b> o nome correto do programa e no campo <b>version</b> a versão correta do programa.</p>
+
+<p>Após isso execute o comando como root para gerar o seu pacote:</p>
+
+<div id="code">
+# createpkg name NomeDoPacote-Versão.mz
+</div>
+
+
+<p>Existe dois scripts em shell que você pode criar dentro do diretório <b>info/</b> que são chamados de <b>pre.sh</b> e <b>pos.sh</b>.</p>
+
+<p><b>pre.sh</b><br>
+Este script é manipulado pelo <b>plantpkg</b> e é executado pré instalação do pacote, ou seja antes do pacote ser instalado. Faça sua rotina pré instalação neste cara.</p>
+
+<p><b>pos.sh</b><br>
+Este script também é manipulado pelo utilitário <b>plantpkg</b> e é executado pós instalação do pacote, faça a sua rotina dentro deste cara se assim necessitar.</p>
+
+<p>Supondo que eu precisasse na pós-instalação do pacote criar um link simbólico para o firefox em /usr/bin, devemos criar um script <b>pre.sh</b> e adicionar informações lá dentro! Lembrando que deve ser dentro do diretório <b>info/</b>.
+Uma rotina clássica:</p>
+
+<div id="code">
+$ cd /tmp/build/leafpad
+<br>
+<br>
+$ ls<br>
+info/  usr/  var/
+<br>
+<br>
+$ cd info/
+<br>
+<br>
+$ ls<br>
+desc
+<br>
+<br>
+$ cat > pos.sh << '<b>EOF</b>' pos.sh
+<br>
+# Script para criar link simbólico do firefox para firefox-quantum<br>
+(ln -sf /usr/bin/firefox /usr/bin/firefox-quantum)<br>
+
+<b>EOF</b>
+</div>
+
+
+<h3 id="instalar-atualizar-pacote" class="titulo">Como instalar/atualizar um pacote</h3>
+<b>plantpkg [opções] [nome_do_pacote-versão.mz]</b><br>
+
+<p>Opções disponíveis do <b>createpkg</b></p>
+
+<div id="code">
+<b>-i</b>, <b>install</b> Instalação de pacote(s)<br>
+<br>
+<b>-u</b>, <b>upgrade</b> Upgrade do(s) pacote(s)<br>
+<br>
+<b>-h</b>, <b>--help</b> Exibe ajuda e sai<br>
+</div>
+
+<p>plantpkg faz a instalação e atualização dos pacotes! A instalação é burra, ou seja ela não verifica versões, já se você usar a opção para atualizar o pacote ele faz a checkagem do nome e versão do pacote, se a versão for uma versão superior ele remove toda a hierarquia da versão anterior e instala a nova versão. Se caso a versão que você deseja "atualizar" for uma versão inferior ele não faz nada. Supondo que queira atualizar a versão do leafpad da 1.0 para versão 2.0:</p>
+
+<div id="code">
+# plantpkg upgrade leafpad-2.0.mz<br>
+<br>
+Package Installed version:	leafpad-1.0<br>
+Package you are installing:	leafpad.2.0<br>
+<br>
+[UPDATE] Let's start updating! Wait.<br>
+<br>
+############################## REMOVE ##############################<br>
+PACKAGE: leafpad<br>
+VERSION: 1.0<br>
+####################################################################<br>
+<br>
+Burned AC	usr/share/locale/nl/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/fi/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/vi/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/ca/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/hu/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/he/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/el/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/pl/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/bg/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/ga/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/pt/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/ru/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/id/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/it/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/zh_TW/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/zh_CN/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/uk/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/sv/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/tr/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/da/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/br/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/ta/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/eu/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/ja/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/sr/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/ko/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/cs/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/es/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/pt_BR/LC_MESSAGES/leafpad.mo
+Burned AC	usr/share/locale/sl/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/de/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/nn/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/lv/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/lt/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/fr/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/sk/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/icons/hicolor/24x24/apps/leafpad.png<br>
+Burned AC	usr/share/icons/hicolor/32x32/apps/leafpad.png<br>
+Burned AC	usr/share/icons/hicolor/16x16/apps/leafpad.png<br>
+Burned AC	usr/share/icons/hicolor/22x22/apps/leafpad.png<br>
+Burned AC	usr/share/icons/hicolor/scalable/apps/leafpad.svg<br>
+Burned AC	usr/share/applications/leafpad.desktop<br>
+Burned AC	usr/share/pixmaps/leafpad.xpm<br>
+Burned AC	usr/share/pixmaps/leafpad.png<br>
+Burned AC	usr/bin/leafpad<br>
+Burned AC	var/log/desc/leafpad-1.0.desc<br>
+<br>
+=======> TOTAL BURNED 46 Archives.<br>
+=======> BURNED 46 Archives and 0 Empty Directories<br>
+<br>
+#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#<br>
+Package:	leafpad<br>
+Version:	2.0<br>
+Small Desc:	Simples editor de texto<br>
+Maintainer:	Jefferson Rocha<br>
+#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#<br>
+<br>
+Daddy likes UNIX-LIKE. Please wait I am installing the package.<br>
+<br>
+[UNZIPPED] OK...<br>
+[MOVED] desc to /var/log/desc/leafpad-2.0.desc<br>
+[INSTALLED] Package leafpad-2.0-mz successfully installed.<br>
+<br>
+</div>
+
+
+<h3 id="remover-pacote" class="titulo">Como remover um pacote</h3>
+<b>burnpkg [opções] [nome_do_pacote] ou [nome_do_pacote-versão]</b><br>
+
+<p>Opções disponíveis do <b>createpkg</b></p>
+
+<div id="code">
+<b>-b</b>, <b>burn</b> Remove pacote(s)<br>
+<br>
+<b>-h</b>, <b>--help</b> Exibe ajuda e sai<br>
+</div>
+
+<p>A ferramenta burnpkg serve para uma única finalidade, remover toda hierarquia do pacote no sistema. Sua sintaxe é bem simples é fácil. Supondo que queira remover o pacote leafpad do meu sistema, como root:</p>
+
+<div id="code">
+# burnpkg burn leafpad<br>
+</div>
+
+<p>Se você ter mais de um pacote com o mesmo nome no sistema mas com versões diferentes não será póssivel remover o pacote somente com o parâmetro -b, burn. Ele irá fazer a listagem do(s) pacote(s) com suas respectivas versõe(s) e será imprimido na tela.
+Exemplo clássico, supondo que tenho o leafpad com 2 versões diferentes no sistema a versão 1.0 e 2.0:</p>
+
+<div id="code">
+# burnpkg burn leafpad<br>
+[FOUND] leafpad-1.0<br>
+[FOUND] leafpad-2.0<br>
+</div>
+
+<p>Então para fazer remoção neste caso eu precisarei passar o <b>nome</b> do pacote traço <b>versão</b>, ficando <b>nomepacote-versão</b>. Vamos supor que queira remover a versão do leafpad 2.0:</p>
+
+<div id="code">
+# burnpkg burn leafpad-2.0<br>
+############################## REMOVE ##############################<br>
+PACKAGE: leafpad<br>
+VERSION: 2.0<br>
+####################################################################<br>
+<br>
+Burned AC	usr/share/locale/nl/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/fi/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/vi/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/ca/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/hu/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/he/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/el/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/pl/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/bg/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/ga/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/pt/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/ru/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/id/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/it/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/zh_TW/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/zh_CN/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/uk/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/sv/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/tr/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/da/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/br/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/ta/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/eu/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/ja/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/sr/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/ko/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/cs/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/es/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/pt_BR/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/sl/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/de/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/nn/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/lv/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/lt/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/fr/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/locale/sk/LC_MESSAGES/leafpad.mo<br>
+Burned AC	usr/share/icons/hicolor/24x24/apps/leafpad.png<br>
+Burned AC	usr/share/icons/hicolor/32x32/apps/leafpad.png<br>
+Burned AC	usr/share/icons/hicolor/16x16/apps/leafpad.png<br>
+Burned AC	usr/share/icons/hicolor/22x22/apps/leafpad.png<br>
+Burned AC	usr/share/icons/hicolor/scalable/apps/leafpad.svg<br>
+Burned AC	usr/share/applications/leafpad.desktop<br>
+Burned AC	usr/share/pixmaps/leafpad.xpm<br>
+Burned AC	usr/share/pixmaps/leafpad.png<br>
+Burned AC	usr/bin/leafpad<br>
+Burned AC	var/log/desc/leafpad-2.0.desc<br>
+<br>
+=======> TOTAL BURNED 46 Archives.<br>
+=======> BURNED 46 Archives and 0 Empty Directories<br>
+</div>
+
+</body>
+</html>

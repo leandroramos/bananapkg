@@ -1,0 +1,13 @@
+plantpkg - .mz package installation tool
+
+OPTIONS:
+    -i, install
+    Install package(s)
+
+    -u, upgrade
+       Upgrade package(s)
+
+    -h, --help
+       Shows this help and exits
+
+USAGE:

@@ -1,0 +1,35 @@
+burnpkg - A simple tool to remove packages from the system
+
+OPTIONS:
+
+-b, -burn
+   PackageName
+
+-h, --help
+   Displays this help and exits
+
+HOW TO USE?
+
+   Assuming you want to remove a package from the system, for
+   example google_chrome, you must run as root:
+
+   # burnpkg google_chrome
+
+   And burnpkg will do the work for you! All files and directories
+   belonging to that package will be removed from the system. But remember,
+   burnpkg won't remove the package dependencies, so you have to burn one package at a time.
+   This is your task.
+  
+   NOTE!
+   If the command returns nothing, it means that the package does not exist in the system.
+
+LISTS
+
+   The list of packages you created with createpkg is in /var/log/list/,
+   burnpkg checks the list in this directory!
+
+AUTHOR
+   Jefferson 'Slackjeff' Rocha <root@slackjeff.com.br>
+
+LICENSE
+   MIT

@@ -57,7 +57,7 @@ _HELP_pt()
 createpkg - Ferramenta para empacotamento .mz
 
 OPÇÕES:
-    -n, --name
+    -n, name
        NomeDoPacote-Versão.mz
 
     -g, generate
@@ -88,11 +88,11 @@ COMO USAR?
        # Nome do pacote
        pkgname=''
 
-       # Pequena descrição do Programa
-       desc=''
-
        # Versão do Programa
        version=''
+
+       # Pequena descrição do Programa
+       desc=''
 
        # URL do Programa
        url=''
@@ -307,11 +307,11 @@ maintainer=""
 # Package Name
 pkgname=""
 
-# SMALL Description of Software, Do not use a long description.
-desc=""
-
 # Software Version
 version=""
+
+# SMALL Description of Software, Do not use a long description.
+desc=""
 
 # URL SOFTWARE
 url=""

@@ -175,7 +175,7 @@ _BURN()
    return 0
 }
 case $1 in
-    -b|--burn)
+    -b|burn)
         shift # Rebaixa baby
         # Se contiver um dos caracteres da lista, não poderá continuar.
         [[ "$1" =~ .*(\*|@|#|,).* ]] && { echo 'Dont Use * or @ or #'; exit 1 ;}

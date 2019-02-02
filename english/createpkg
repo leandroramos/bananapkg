@@ -1,0 +1,386 @@
+#!/usr/bin/env bash
+#=====================HEADER=========================================|
+#AUTHOR
+# Jefferson 'slackjeff' Rocha <root@slackjeff.com.br>
+#
+#LICENSE
+# MIT
+#
+#Package
+# name-version-architeture.mz
+#
+#VERSION
+# 1.3
+#
+#CHANGELOG
+# (VERSION 1.1) - Jefferson Rocha
+#  - Now the program creates the list only if necessary.
+#
+# (VERION 1.2) - Jefferson Rocha
+#  - Added not allowed characters checking (Space, #, !, @...)
+#====================================================================|
+
+#===============VARIABLES
+format_pkg='mz'            # Package extension
+local_list="var/log/list/"  # list location
+bug='/var/log/createpkg-bug.log'
+#========Colors
+red='\033[31;1m'
+blue='\033[34;1m'
+cyan='\033[36;1m'
+pink='\033[35;1m'
+end='\033[m'
+
+#===============TESTS
+# No root, no deal.
+[[ "$UID" -ne '0' ]] && { echo "Root is required."; exit 1 ;}
+
+# Cleaning environment variables to avoid
+# problems
+var_list=(
+   'maintainer' 'pkgname' 'desc' 'version' 'url'
+)
+for hellclean in "${var_list[@]}"; do
+    unset "${hellclean}"
+done
+
+# Creating directories if they don't exist
+for createdir in '/var/log/list' '/var/log/desc'; do
+    [[ ! -d "$createdir" ]] && mkdir -p "$createdir"
+done
+
+#===============FUNCTIONS
+_HELP_pt()
+{
+    cat << 'EOF'
+createpkg - Tool for .mz packaging
+
+OPTIONS:
+    -n, name
+       PackageName-Version.mz
+
+    -g, generate
+       Generates an empty desc file
+
+    -h, --help
+       Shows this hel and exits
+
+USAGE:
+
+       To use createpkg, after fakeroot, is NECESSARY to enter the program
+       directory. After this you can run it with the -n or --name parameter, 
+       followed by package name. With this option you will generate a .mz
+       package! But before that you need to make some changes in your
+       future package!
+
+       THE *info* DIRECTORY AND THE *desc* FILE
+
+       It is very important to create a *info* directory inside current directory,
+       where you have compiled your files. Inside *info* directory you need to create
+       the *desc* file, which contains the package configs.
+       FIELDS in the desc FILE:
+
+       # Maintainer name
+       maintainer=''
+
+       # Package Name
+       pkgname=''
+
+       # Package version
+       version=''
+
+       # Small package description
+       desc=''
+
+       # Package URL
+       url=''
+
+       # Package dependencies. Not required, but useful
+       # for future reference
+       dep=("")
+  
+       Fill in all fields in lower case, *pkgname* and *version* must be the same
+       here and in the package creation. Assuming you filled 'google_chrome' in *pkgname*
+       and '57.6.8.0' in *version*, you will need to create the package like this:
+
+       # createpkg -n "google_chrome-57.6.8.0.mz"
+
+       You will get an error message from createpkg if you miss typing anything.
+
+    NOTE!
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+       To generate a *desc* template you can use the -g parameter
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+       After inserting or removing things to configure, it's time to run createpkg
+       to create a simple package. Run as root:
+
+       # createpkg -n "firefox_quantum-54.0.mz"
+  
+       Two files will be generated in the parent directory:
+       "firefox_quantum-54.0.mz" and "firefox_quantum-54.0.sha256"
+  
+    NOTE!
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+       The package name must have no more than 1 dash (-), it is the splitter
+       from the package name to the package version. If you need to separate the
+       package name as google-chrome, use (_) UNDERLINE. 'Google' Chrome package
+       creation example:
+
+       # createpkg -n "google_chrome-64.5.9.2.mz"
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+PACKAGE
+
+       The generated package is a simple tar xz compressed file, and we cal it
+       *mz* or *.mz*. You can unpack the file with tar utility, but package will be messy
+       at the system root and you will have to manually deal with it. That's why we do not
+       recommend this action. 
+       To install the package we recommend you use the *plantpkg* utility, which does
+       a clean installation and treats the whole file before actually installing.
+
+AUTHOR
+
+    Jefferson 'Slackjeff' Rocha <root AT slackjeff DOT com DOT br>
+
+LICENÇA
+
+    MIT
+EOF
+}
+
+# Function to verify the directory (info) and its files
+_VERIFY_ON()
+{
+    # Local variables
+    local dir_info='info' # Info directory which contains informations (like desk)
+    local info_desc='desc'
+    
+    if [[ ! -d "$dir_info" ]]; then # info directory exists?
+        echo -e "${red}[ERROR!]${end} ${pink}${dir_info}${end} directory\n"
+        echo -e "Your package must have the DIRECTORY ${pink}info${end}."
+        echo -e "${pink}${dir_info}${end} is a directory with important files."
+        echo "For more information use -h, --help."
+        exit 1
+    elif [[ ! -e "${dir_info}/${info_desc}" ]]; then
+        echo -e "${red}[ERROR!]${end} ${pink}${info_desc}${end} archive\n"
+        echo -e "Your package must have the FILE ${pink}desc${end} inside of directory '${dir_info}'."
+        echo -e "${pink}${info_desc}${end} have informations of your package."
+        echo "For more information use -h, --help."
+        exit 1
+    else
+    # Let's check the 'desc' variables
+    # all variables must have values 
+        source ${dir_info}/${info_desc} # Loading file
+        if [[ -z "$maintainer" ]]; then
+            echo -e "Check ${pink}${info_desc}${end}, VARIABLE ${blue}maintainer${end} null"
+            echo "Enter the name of the package maintainer into maintainer variable."
+            exit 1
+        elif [[ -z "$pkgname" ]]; then
+            echo -e "Check ${pink}${info_desc}${end}, VARIABLE ${blue}pkgname${end} null"
+            echo "Enter the name of the package into pkgname variable ."
+            exit 1
+        elif [[ -z "$desc" ]]; then
+            echo -e "Check ${pink}${info_desc}${end}, VARIABLE ${blue}desc${end} null"
+            echo "Give a small package description into desc variable."
+            exit 1
+        elif [[ -z "$version" ]]; then
+            echo -e "Check ${pink}${info_desc}${end}, VARIABLE ${blue}version${end} null"
+            echo "Enter a version of software into version variable."
+            exit 1
+        elif [[ -z "$url" ]]; then
+            echo -e "Check ${pink}${info_desc}${end}, VARIABLE ${blue}url${end} null"
+            echo "Enter a url of project/software into url variable."
+            exit 1
+        fi
+        # Checking if package name and version are the same
+        # the user have passed
+        if [[ "$pkgname" != "$(echo "$package" | cut -d '-' -f '1')" ]]; then
+            echo -e "Checking ${pink}${info_desc}${end}, VARIABLE ${blue}pkgname${end} has different"
+            echo "value you entered as an argument. Check and return ;)"
+            exit 1
+        elif [[ "$version" != $(echo "$package" | cut -d '-' -f '2' | sed 's/\.mz//') ]]; then
+            echo -e "Checking ${pink}${info_desc}${end}, VARIABLE ${blue}version${end} has different"
+            echo "value you entered as an argument. Check and return ;)"
+            exit 1
+        else
+            echo -e "${blue}[CHECK VARIABLES]${end} OK."
+            return 0
+        fi
+    fi # if principal
+}
+
+_LIST_ARCHIVES_DIRECTORIES()
+{
+    echo -e "${blue}[Create]${end} ${package}.list in temporary local: $temp_list"
+    # Listing all directory files, except the ones listed below
+    find .                        \
+       \( ! -name bin \)          \
+       \( ! -name boot \)         \
+       \( ! -name dev \)          \
+       \( ! -name etc \)          \
+       \( ! -name home \)         \
+       \( ! -name lib \)          \
+       \( ! -name lib64 \)        \
+       \( ! -name lost+found \)   \
+       \( ! -name media \)        \
+       \( ! -name mnt \)          \
+       \( ! -name opt \)          \
+       \( ! -name proc \)         \
+       \( ! -name root \)         \
+       \( ! -name run \)          \
+       \( ! -name sbin \)         \
+       \( ! -name srv \)          \
+       \( ! -name sys \)          \
+       \( ! -name tmp \)          \
+       \( ! -name usr \)          \
+       \( ! -name var \)          \
+       \( ! -name info \)         \
+      -print > "$temp_list"
+}
+
+# Function to clear the (package) list
+# To make sure we will not have problems
+# Se caso o arquivo ou diretório estiver solto ele será
+# removido.
+_CLEAN_LIST()
+{
+    echo -e "${cyan}[Clean]${end} List: $temp_list"
+    # Apagando linhas desnecessárias na lista
+    # E substituindo
+    sed -i "
+        s/^\.\///g
+        s/^\///g
+        /^\./d
+        /^ *$/d
+        /^var\/log\/list\/.*\.list/d
+        /^var\/log$/d
+        s|info\/desc|var\/log\/desc\/${package}.desc|
+    " "$temp_list"
+}
+
+_CREATE_PKG()
+{
+    echo -e "${blue}[Create]${end} Now, create package for You! Wait..."
+    if tar cvJf ../${package}.${format_pkg} . ; then
+        echo -e "${blue}[Create]${end} Your Package on: ../${package}.${format_pkg}"
+        ( # Subshell
+          cd .. # Voltando 1 diretório acima ;)
+          if sha256sum ${package}.${format_pkg} > ${package}.${format_pkg}.sha256; then
+              echo -e "${blue}[Create]${end} Your sha256 on: ../${package}.${format_pkg}.sha256"
+          else
+              echo -e "${red}[Warning!]${end} No create ../${package}.${format_pkg}.sha256"
+          fi
+        )
+    else
+        echo -e "${red}[Error!]${end} No created package ../${package}.${format_pkg}"
+        echo "This error is fatal, so the program will not proceed."
+        exit 1
+    fi
+}
+
+# Gera o arquivo desc de base, também se o diretório
+# info não existir ele cria!
+_GENERATE_DESC()
+{
+    [[ ! -d "info" ]] && mkdir info # diretorio info não existe? crie.
+    cat > info/desc << 'EOF'
+######################################################################
+# This file is the heart of the package, it is necessary to do
+# conferences, so it is important you add the information correctly.
+# All variables are required! The array of dependencies *dep* does
+# not, but it's interesting you add for future reference.
+######################################################################
+
+# Package Maintainer Name
+maintainer=""
+
+# Package Name
+pkgname=""
+
+# Software Version
+version=""
+
+# SMALL Description of Software, Do not use a long description.
+desc=""
+
+# URL SOFTWARE
+url=""
+
+# What packages do your package need to run?
+# This array is optional.
+dep=("")
+EOF
+    echo -e "${pink}[DESC]${end} Created successfully inside of directory ${blue}info${end}"
+    exit 0
+}
+
+#==================INICIO
+case $1 in
+    -n|name)
+       shift # Rebaixando
+       # Se nome do pacote não for letras ou se tiver
+       # espaços entre outras coisas, não pode continuar.
+       re="\.\<${format_pkg}\>"
+       if ! [[ "$1" =~ ^.*${re} ]]; then
+           echo -e "${red}[Error!]${end} Package need finish .$format_pkg"
+           exit 1
+       elif [[ "$(echo "$1" | grep -o '-' | wc -l)" -gt '1' || "$(echo "$1" | grep -o '-' | wc -l)" -lt '1'  ]]; then
+           echo -e "${red}[Error!]${end} Unexpected ' - ' Count."
+           echo -e "USE ONLY ONE ' ${red}-${end} ' In the name of your package."
+           echo ""
+           echo -e "EXAMPLE the perfect format: ${blue}leafpad${end}-${blue}2.6.8${end}.${blue}mz${end}"
+           echo ""
+           echo -e "If you need separate name of package prefer use ' ${red}_${end} '"
+           echo -e "EXAMPLE: firefox_quantum${blue}-${end}54.8.9.mz"
+           echo ""
+           echo "If you need more HELP, use -h or --help"
+           exit 1
+       # Se nome do pacote ter espaços não deve continuar
+       elif [[ "$1" =~ .*[[:space:]]+.*-.* ]]; then
+           echo -e "${red}[Error!]${end} Unexpected character."
+           echo ""
+           echo -e "Perfect Format name is: ${blue}name-version.mz${end}"
+           echo -e "${red}DONT USE${end} symbols, space, tab etc.. in name of package."
+           echo ""
+           echo "If you need more HELP, use -h or --help"
+           exit 1
+       else
+            # Pegando somente nome do pacote
+            # sem extensão
+            package="${1/%.mz/}"
+            # lista temporaria para usar nas funções
+            # _LIST_ARCHIVES_DIRECTORIES e _CLEAN_LIST
+            temp_list="/tmp/${package}.temp"
+       fi
+         # Verificação de tudo está aonde deveria estar, como diretório
+         # (info) e o arquivo de descrição (desc)
+         _VERIFY_ON
+         # Iniciando processo de listagem de diretório
+         # e limpeza no arquivo de listagem
+         _LIST_ARCHIVES_DIRECTORIES || exit 1
+         _CLEAN_LIST || exit 1
+         # Se var/log/list existir apague, para criar um novo.
+         if [[ -d "$local_list" ]]; then
+             rm -r "$local_list" || { echo -e "${red}[ABORTED]${end} $local_list not removed."; exit 1 ;}
+         fi
+         # Criando novo diretorio para armazenar listagem
+         [[ ! -d "$local_list" ]] && mkdir -p "$local_list"
+         ( # Subshell
+           cd "$local_list" || exit 1
+           cp "$temp_list" "${package}.list" || exit 1
+           echo -e "${pink}[MOVED]${end} $temp_list for ${local_list}${package}.list"
+         )
+         # Iniciando processo de criação do pacote
+         _CREATE_PKG || exit 1
+         # Apagando arquivo(s) temporário(s)
+         rm "$temp_list"
+    ;;
+
+    -g|generate)
+        _GENERATE_DESC || exit 1
+    ;;
+
+    -h|--help) _HELP_pt; exit 0 ;;
+    *)         _HELP_pt; exit 0 ;;
+esac

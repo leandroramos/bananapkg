@@ -1,6 +1,6 @@
 # bananapkg :banana: :package:
-🇧🇷 Gerenciador de baixo nível Escrito em Shell. <br/>
-:us: Low level package manager Written in Shell.
+🇧🇷 Gerenciador de baixo nível escrito em Shell. <br/>
+:us: Low level package manager written in Shell.
 
 ----
 
@@ -34,15 +34,15 @@ Remove um ou mais pacotes<br/><br/>
 ## Explanation of utilities :us: ENG
 
 ### createpkg (Create package .mz)
-Creating packages in .mz format, this is a simple tarball compressed with utility xz <br/><br/>
+Package creation in .mz format, this is a simple tarball compressed with xz utility <br/><br/>
 **- n, name** *package_name-version.mz* <br/>
 **- g, generate** Generate a directory *info/* with a *desc* file for editing <br/>
 **- h, help** Displays help
 
 ### plantpkg (Install and Upgrade package)
 Installing and updating one or more packages <br/><br/>
-**- i, install** *package_name-version.mz* (Package installation) <br/>
-**- u, upgrade** *package_name-version.mz* (Package update) <br/>
+**- i, install** *package_name-version.mz* (Install package) <br/>
+**- u, upgrade** *package_name-version.mz* (Update package) <br/>
 **- h, help** Displays help
 
 ### burnpkg (Remove Package)
